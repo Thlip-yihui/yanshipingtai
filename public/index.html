@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="description" content="档案系统演示导航台：从档案管理到智能设备，一站开启演示。" />
+    <title>档案系统演示导航台</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%23111111'/%3E%3Cpath d='M11 12h18v6H11zm2 6v11h14V18m-9 4h4' fill='none' stroke='%2375f59a' stroke-width='2'/%3E%3C/svg%3E" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#systems">跳到系统入口</a>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="档案系统演示导航台首页">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4h16v5H4zM6 9v11h12V9M10 13h4M9 4v5M15 4v5" /></svg></span>
+        <span>档案演示<span class="brand-secondary">ARCHIVE DEMO</span></span>
+      </a>
+      <nav class="header-nav" aria-label="主导航">
+        <a class="nav-link" href="#systems">系统入口</a>
+        <button class="nav-link" id="help-button" type="button">使用说明</button>
+        <a class="header-cta" href="#systems">开始演示 <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero-art" aria-hidden="true">
+          <div class="orbit-ring"></div>
+          <div class="floating-object folder-object">
+            <span class="folder-back"></span><span class="folder-paper"><i></i><i></i><i></i></span>
+            <span class="folder-front"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zM14 3v5h4M9 12h6M9 16h6" /></svg><small>ARCHIVE</small></span>
+            <span class="object-caption">每一份档案，都有归处。</span>
+          </div>
+          <div class="floating-object search-object"><svg viewBox="0 0 100 100"><circle cx="42" cy="41" r="22"/><path d="m59 58 19 20"/><path class="lens-glint" d="M30 40a12 12 0 0 1 12-12"/></svg><span class="search-spark">✦</span></div>
+          <div class="floating-object cabinet-object"><span class="cabinet-top">SMART FILES <i></i></span><div><span></span><span></span><span></span></div><b>让管理，更聪明。</b></div>
+          <div class="floating-object star-object"><svg viewBox="0 0 100 100"><path d="m50 3 9 28 25-15-15 25 28 9-28 9 15 25-25-15-9 28-9-28-25 15 15-25L3 50l28-9-15-25 25 15z" /></svg></div>
+          <span class="decoration-dot dot-one"></span><span class="decoration-dot dot-two"></span>
+        </div>
+        <div class="hero-copy">
+          <p class="eyebrow"><span></span> YOUR ARCHIVE. ONE WORKSPACE.</p>
+          <h1 id="page-title">档案系统<span>演示导航台<span class="title-dot">.</span></span></h1>
+          <p class="hero-handwritten">让每一次演示，一触即达。</p>
+          <p class="hero-description">从数字档案到智能设备，在这里连接每一种可能。</p>
+          <a class="hero-cta" href="#systems"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 3 5.5 17 3-7.5L20 9.5 4 3zM13 13l6 6"/></svg>探索系统入口<span aria-hidden="true">↗</span></a>
+        </div>
+        <span class="hero-bottom-label" aria-hidden="true">BUILT FOR YOUR NEXT DEMO</span>
+      </section>
+      <section class="workspace main-shell" id="systems" aria-labelledby="systems-title" tabindex="-1">
+        <div class="section-heading">
+          <div class="section-title"><h2 id="systems-title">选择系统，开启演示<span class="heading-dot">.</span></h2></div>
+          <span class="service-state" id="service-state"><span class="state-dot"></span><span id="service-label">正在连接本地服务</span></span>
+        </div>
+        <div class="toolbar">
+          <div class="filters" role="group" aria-label="筛选系统">
+            <button type="button" class="filter is-active" data-filter="all" aria-pressed="true">全部系统</button>
+            <button type="button" class="filter" data-filter="enabled" aria-pressed="false">已配置</button>
+            <button type="button" class="filter" data-filter="reserved" aria-pressed="false">待配置</button>
+          </div>
+          <label class="search-box">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+            <input id="search-input" type="search" placeholder="搜索系统名称、网址或账号" aria-label="搜索系统名称、网址或账号" autocomplete="off" />
+            <span aria-hidden="true">⌕</span>
+          </label>
+        </div>
+        <div class="system-grid" id="system-grid" aria-busy="true"></div>
+        <div class="empty-state" id="empty-state" hidden>
+          <span class="empty-symbol" aria-hidden="true">⌕</span>
+          <h3 id="empty-title">正在载入系统</h3>
+          <p id="empty-message">请稍候，本地服务正在读取配置。</p>
+          <button id="retry-button" class="retry-button" type="button" hidden>重新加载</button>
+        </div>
+      </section>
+    </main>
+    <dialog id="notice-dialog" class="notice-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-message">
+      <form method="dialog">
+        <span class="dialog-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg></span>
+        <span class="dialog-kicker">MORE POSSIBILITIES, COMING SOON</span>
+        <h2 id="dialog-title">系统入口已预留</h2>
+        <p id="dialog-message"></p>
+        <button type="submit" class="open-button">我知道了</button>
+      </form>
+    </dialog>
+    <dialog id="help-dialog" class="notice-dialog help-dialog" aria-labelledby="help-title">
+      <form method="dialog">
+        <span class="dialog-kicker">READY, SET, DEMO.</span>
+        <h2 id="help-title">三步，开始演示</h2>
+        <ol class="help-steps">
+          <li><span>01</span><div><strong>选择系统</strong><p>在系统卡片中点击「系统演示」。</p></div></li>
+          <li><span>02</span><div><strong>等待自动登录</strong><p>系统会在独立浏览器窗口中打开，并尝试填写账号、密码和提交登录。</p></div></li>
+          <li><span>03</span><div><strong>开始你的演示</strong><p>遇到验证码或登录失败，可在打开的窗口中手动处理。待配置入口会显示预留提示。</p></div></li>
+        </ol>
+        <button type="submit" class="open-button">开始体验 <span aria-hidden="true">↗</span></button>
+      </form>
+    </dialog>
+  </body>
+</html>

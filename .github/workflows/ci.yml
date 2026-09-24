@@ -1,0 +1,37 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Node.js 24 / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Install test browser
+        if: runner.os == 'Linux'
+        run: npx playwright install --with-deps chromium
+      - name: Install Windows test browser
+        if: runner.os == 'Windows'
+        run: npx playwright install chromium
+      # 本地 fixture HTTP 服务和虚构凭据足够，不需要 systems.js 或仓库 secrets。
+      # Windows 程序启动和隧道操作均已替换为测试替身，不会访问真实演示系统。
+      - name: Run tests
+        run: npm test

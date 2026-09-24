@@ -1,0 +1,37 @@
+.hosted-intro { padding: 55px 24px 43px; text-align: center; background: #fff; border-bottom: 1px solid var(--line); }
+.hosted-intro .eyebrow { margin-bottom: 14px; }
+.hosted-intro h1 { font-size: 42px; line-height: 1.25; letter-spacing: 0; overflow-wrap: anywhere; }
+.hosted-lede { margin: 15px auto 0; color: #3f4854; font-size: 17px; line-height: 1.65; }
+.hosted-explainer { max-width: 660px; margin: 9px auto 0; color: #737773; font-size: 13px; line-height: 1.8; }
+.hosted-launch { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; margin-top: 20px; padding: 11px 20px; border: 1px solid #2563eb; border-radius: 8px; background: #2563eb; color: #fff; font-size: 14px; font-weight: 650; text-decoration: none; }
+.hosted-launch:hover { background: #1d4ed8; border-color: #1d4ed8; }
+.desktop-state { color: #657080; font-size: 12px; }
+.desktop-state[data-state="ready"] { color: #237838; }
+.desktop-state[data-state="error"] { color: #a75a43; }
+.hosted-systems { padding-top: 28px; padding-bottom: 54px; }
+.hosted-systems .section-heading { align-items: center; margin-bottom: 17px; }
+.hosted-systems .section-title h2 { letter-spacing: 0; }
+.system-count { color: #727b86; font-size: 12px; }
+.hosted-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.hosted-card { display: flex; flex-direction: column; min-width: 0; padding: 17px; border: 1px solid #e5e8e0; border-radius: 8px; background: #fff; }
+.hosted-card h3 { min-height: 50px; margin: 0; color: #202b39; font-size: 15px; line-height: 1.65; overflow-wrap: anywhere; }
+.hosted-kind { margin: 7px 0 14px; color: #737d8a; font-size: 11px; line-height: 1.6; }
+.hosted-card a { margin-top: auto; text-decoration: none; text-align: center; }
+.hosted-card a[aria-disabled="true"] { border-color: #cbd1d9; background: #e6e9ee; color: #68717f; pointer-events: none; }
+.hosted-note { margin: 16px 0 0; color: #68717f; font-size: 12px; line-height: 1.8; }
+.hosted-footer { padding: 20px 24px; border-top: 1px solid var(--line); background: #fff; text-align: center; color: #77808b; font-size: 11px; }
+@media (max-width: 950px) { .hosted-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 680px) {
+  .site-header { height: 66px; padding: 0 16px; }
+  .header-nav { gap: 12px; }
+  .desktop-state { max-width: 44vw; text-align: right; line-height: 1.5; }
+  .hosted-intro { padding: 37px 20px 32px; }
+  .hosted-intro h1 { font-size: 30px; }
+  .hosted-lede { font-size: 15px; }
+  .hosted-explainer { font-size: 12px; }
+  .hosted-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .hosted-card { padding: 13px; }
+  .hosted-card h3 { min-height: 68px; font-size: 13px; }
+  .hosted-card .open-button { min-height: 42px; padding: 9px 7px; font-size: 11px; }
+}
+@media (max-width: 380px) { .hosted-grid { grid-template-columns: minmax(0, 1fr); } }
