@@ -4,7 +4,7 @@
 
 **仅演示环境使用。** 账号密码保存在本机配置文件中，请勿将包含真实凭据的项目公开发布。
 
-**GitHub 与外网访问：** 仓库包含 GitHub Pages 自动发布工作流，推送至 `main` 后可发布公开导航网址。Pages 本身不运行 Node.js、Playwright 或 Windows 演示程序；所有系统按钮须连接到已部署且经过身份验证的远程 Windows 桌面。请按 [GitHub Pages 与外网部署说明](docs/DEPLOYMENT.md) 设置 `DEMO_DESKTOP_URL`。页面可公开访问，系统演示仍依赖网关和 Windows 主机已配置并运行。
+**GitHub 与外网访问：** 仓库包含 GitHub Pages 自动发布工作流，推送至 `main` 后可发布公开导航网址。Pages 本身不运行 Node.js、Playwright 或 Windows 演示程序；所有系统按钮须连接到已部署且经过身份验证的远程 Windows 桌面。请按 [GitHub Pages 与外网部署说明](docs/DEPLOYMENT.md) 设置 `DEMO_DESKTOP_URL`。页面可公开访问，系统演示仍依赖网关和 Windows 主机已配置并运行。Pages 展示数据位于 `public/hosted.js`，只包含公开系统信息与账号名，不包含密码；新增系统时需同时更新本机配置与该静态展示清单。
 
 界面采用白底网格、大字号标题、荧光绿点缀和档案主题漂浮图形。点击「探索系统入口」可跳转到卡片区，支持按配置状态筛选、搜索系统，以及查看使用说明。桌面使用多列卡片，手机使用单列阅读布局；全部图形由原生 CSS/SVG 绘制，无需加载外部图片或字体。
 
@@ -59,7 +59,7 @@ archive-demo-nav/
 
 ## 系统配置
 
-修改 `config/systems.js` 后重启服务生效。交付目录中的本机配置包含指定的演示系统；通过 Git 获取项目时，该文件不会被提交，需要先复制示例并填写配置。
+修改 `config/systems.js` 后重启服务生效。交付目录中的本机配置包含指定的演示系统；通过 Git 获取项目时，该文件不会被提交，需要先复制示例并填写配置。GitHub Pages 的系统卡片不读取本机 API，如需更新公开名称、网址、账号或配置状态，还需编辑 `public/hosted.js`。
 
 Windows PowerShell：
 
@@ -184,6 +184,6 @@ npm run export:source
 
 `check` 检查本机静态配置和依赖，`check:network` 增加从当前主机进行的网页连通性检查；均不会提交真实账号或运行安装包。结果不代表真实登录、业务功能或外网远程桌面已验收。`npm run check:public` 会明确报告当前本机架构缺少直接公网演示能力并返回非零退出码。
 
-`pages:build` 在 `dist/pages` 构建可发布到 GitHub Pages 的纯静态导航页；可以通过 `DEMO_DESKTOP_URL` 环境变量传入经认证的 HTTPS 远程桌面网址。未配置网址时会生成按钮禁用的预览站。GitHub Actions Pages 工作流从仓库变量读取该网址，并输出部署成功后的访问 URL。
+`pages:build` 在 `dist/pages` 构建可发布到 GitHub Pages 的纯静态导航页；可以通过 `DEMO_DESKTOP_URL` 环境变量传入经认证的 HTTPS 远程桌面网址。未配置网址时，卡片仍可查看并操作，但会提示演示主机未接入，不会假报系统已打开。配置网址后，卡片会在新标签页进入共用的远程桌面；同事仍需在桌面内的导航台选择系统。GitHub Actions Pages 工作流从仓库变量读取该网址，并输出部署成功后的访问 URL。
 
 `export:source` 在 `dist/` 创建新的源码交付目录，采用文件清单排除真实配置、安装包和隧道文件。将该目录内容放在 GitHub 仓库根目录，保留 `.github`、`.gitignore` 与 `package-lock.json`。仓库包含 Windows/Ubuntu 测试工作流和 GitHub Pages 发布工作流；Pages 只托管导航入口，不是远程演示主机。
