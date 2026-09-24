@@ -41,12 +41,13 @@ async function openPortal(t, desktopUrl) {
   return { page, context, errors };
 }
 
-test('public portal mirrors the navigation UI and explains the unconnected demo host', async t => {
-  const { page, errors } = await openPortal(t, '');
-  await page.getByText('演示主机尚未接入', { exact: true }).waitFor();
+test('public portal links directly to public web systems and explains private app requirements', async t => {
+  const { page, context, errors } = await openPortal(t, '');
+  await page.getByText('公网网页入口已加载', { exact: true }).waitFor();
   assert.equal(await page.locator('.system-card').count(), 8);
   assert.equal(await page.locator('.system-card .open-button').count(), 8);
-  assert.equal(await page.locator('.system-card button.open-button').count(), 8);
+  assert.equal(await page.locator('.system-card a.open-button').count(), 6);
+  assert.equal(await page.locator('.system-card button.open-button').count(), 2);
   assert.deepEqual(await page.locator('.system-card .card-badge').allTextContents(), Array(8).fill('已配置'));
   assert.equal(await page.locator('#page-title').count(), 1);
   assert.equal(await page.locator('.hero-art').count(), 1);
@@ -57,9 +58,27 @@ test('public portal mirrors the navigation UI and explains the unconnected demo 
   assert.ok(!(await page.content()).includes('123456'));
   assert.deepEqual(errors, []);
 
+  const courtUrl = 'http://47.115.224.12:8080/#/home/borrowReturn';
+  const courtLink = page.locator('[data-system-id="court-file-cabinet"] a.open-button');
+  assert.equal(await courtLink.getAttribute('href'), courtUrl);
+  assert.equal(await courtLink.getAttribute('target'), '_blank');
+  assert.match(await courtLink.getAttribute('rel'), /noopener/);
+  await context.route('http://47.115.224.12:8080/**', route => route.fulfill({ status: 200, contentType: 'text/html', body: '<title>System fixture</title>' }));
+  const popupPromise = page.waitForEvent('popup');
+  await courtLink.click();
+  const popup = await popupPromise;
+  await popup.waitForLoadState('domcontentloaded');
+  assert.equal(popup.url(), courtUrl);
+
   await page.getByRole('button', { name: '系统演示：密集架一体化平台管理系统' }).click();
   assert.equal(await page.locator('#notice-dialog').isVisible(), true);
-  assert.match(await page.locator('#dialog-message').textContent(), /GitHub Pages 只能托管导航页面/);
+  assert.equal(await page.locator('#dialog-title').textContent(), '需要内网或演示桌面');
+  assert.match(await page.locator('#dialog-message').textContent(), /私有内网地址 192\.168\.3\.251/);
+  await page.getByRole('button', { name: '我知道了' }).click();
+
+  await page.getByRole('button', { name: '系统演示：艾搜文件智能体' }).click();
+  assert.equal(await page.locator('#dialog-title').textContent(), '需要 Windows 客户端');
+  assert.match(await page.locator('#dialog-message').textContent(), /GitHub Pages 无法在访问者电脑上启动/);
   await page.getByRole('button', { name: '我知道了' }).click();
 
   await page.getByRole('button', { name: '待配置', exact: true }).click();
@@ -80,12 +99,13 @@ test('public portal mirrors the navigation UI and explains the unconnected demo 
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
 });
 
-test('configured cards open only the HTTPS desktop endpoint and describe the shared session', async t => {
+test('private network and Windows app cards use the configured HTTPS desktop; public web cards stay direct', async t => {
   const desktopUrl = 'https://demo.example.org/guacamole/#/client/archive';
   const { page, context, errors } = await openPortal(t, desktopUrl);
-  await page.getByText('受控演示桌面已接入', { exact: true }).waitFor();
-  assert.equal(await page.locator('.system-card a[href="https://demo.example.org/guacamole/#/client/archive"]').count(), 8);
-  assert.match(await page.locator('#hosted-note').textContent(), /各系统入口共用授权 Windows 演示桌面/);
+  await page.getByText('公网网页与专用桌面入口已加载', { exact: true }).waitFor();
+  assert.equal(await page.locator('.system-card a[href="https://demo.example.org/guacamole/#/client/archive"]').count(), 2);
+  assert.equal(await page.locator('.system-card a[href^="http://"]').count(), 6);
+  assert.match(await page.locator('#hosted-note').textContent(), /公网网页系统从卡片直接打开/);
   await context.route('https://demo.example.org/**', route => route.fulfill({ status: 200, contentType: 'text/html', body: '<title>Demo fixture</title>' }));
   const popupPromise = page.waitForEvent('popup');
   await page.getByRole('link', { name: '系统演示：密集架一体化平台管理系统' }).click();

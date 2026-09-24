@@ -56,7 +56,7 @@ if (require.main === module) {
     console.info(`GitHub Pages 静态站点已构建：${result.destination}`);
     console.info(result.remoteDesktopConfigured
       ? '已配置 HTTPS 远程桌面入口。'
-      : '远程桌面未配置：静态页面仍会发布，系统演示按钮会提示主机未接入。请设置 GitHub 仓库变量 DEMO_DESKTOP_URL。');
+      : '远程桌面未配置：6 个公网网页链接仍可直达；密集架和艾搜需要专用网络或 Windows 桌面。请按需设置 DEMO_DESKTOP_URL。');
   } catch (error) {
     console.error(`GitHub Pages 构建失败：${error.message}`);
     process.exitCode = 1;

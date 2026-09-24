@@ -4,7 +4,7 @@ const systems = [
   { id: 'court-file-cabinet', name: '智能文件柜-法院', url: 'http://47.115.224.12:8080/#/home/borrowReturn', username: 'admin', enabled: true, description: '文件借还与智能柜管理' },
   { id: 'paperless-go', name: 'AI辅助数字化扫描加工', url: 'http://47.113.229.248:4000', username: 'admin', enabled: true, description: 'AI辅助扫描加工与数字化归档' },
   { id: 'digital-archive', name: '档案数字化管理系统', url: 'http://47.120.38.133:9528', username: 'admin', enabled: true, description: '数字化加工与档案管理' },
-  { id: 'dense-shelf-platform', name: '密集架一体化平台管理系统', url: 'http://192.168.3.251/#/home', username: 'admin', enabled: true, description: '连接花都演示隧道，进入一体化平台3.2' },
+  { id: 'dense-shelf-platform', name: '密集架一体化平台管理系统', url: 'http://192.168.3.251/#/home', username: 'admin', enabled: true, description: '内网平台，需连接花都演示隧道或授权桌面' },
   { id: 'integrated-archive', name: '综合档案管理系统', url: 'http://a.wenzhi.icu:8205/#/zhlogin', username: 'test01', enabled: true, description: '档案全生命周期管理' },
   { id: 'cadre-personnel-archive', name: '干部人事档案管理系统', url: 'http://a.wenzhi.icu:58817/', username: 'admin', enabled: true, description: '干部人事档案集中管理' },
   { id: 'standalone-archive', name: '综合单机版档案系统', url: 'http://a.wenzhi.icu:58801', username: 'admin', enabled: true, description: '本地档案整理与查阅' },
@@ -34,6 +34,7 @@ const appearances = {
   'aisou-file-agent': ['agent', 'purple'],
 };
 const localPackageSystems = new Set(['aisou-file-agent']);
+const desktopOnlySystems = new Set(['dense-shelf-platform', 'aisou-file-agent']);
 const grid = document.querySelector('#system-grid');
 const empty = document.querySelector('#empty-state');
 const emptyTitle = document.querySelector('#empty-title');
@@ -72,13 +73,22 @@ function detail(label, value, iconName) {
 
 function explainUnavailable(system) {
   if (!system.enabled) {
+    document.querySelector('#dialog-title').textContent = '系统入口已预留';
     noticeMessage.textContent = system.id === 'cadre-personnel-archive'
       ? '该系统暂未配置网址、账号和密码，按钮已预留。'
       : '该系统暂未配置，按钮已预留。';
+  } else if (system.id === 'dense-shelf-platform') {
+    document.querySelector('#dialog-title').textContent = '需要内网或演示桌面';
+    noticeMessage.textContent = '密集架平台位于私有内网地址 192.168.3.251，外网浏览器无法直接访问。请先连接单位 VPN/演示隧道，或由管理员配置受保护的 HTTPS Windows 演示桌面入口。';
+  } else if (localPackageSystems.has(system.id)) {
+    document.querySelector('#dialog-title').textContent = '需要 Windows 客户端';
+    noticeMessage.textContent = '艾搜文件智能体是 Windows 客户端，GitHub Pages 无法在访问者电脑上启动或安装程序。请在授权 Windows 演示桌面预先安装客户端，并配置受保护的 HTTPS 桌面入口。';
   } else if (state.configError) {
+    document.querySelector('#dialog-title').textContent = '演示配置读取失败';
     noticeMessage.textContent = state.configError;
   } else {
-    noticeMessage.textContent = '公网演示主机尚未接入。GitHub Pages 只能托管导航页面，无法启动原项目中的 Express、Playwright 或 Windows 程序。请管理员部署经过身份验证的 HTTPS 远程桌面，并在 GitHub 仓库变量 DEMO_DESKTOP_URL 中配置入口。';
+    document.querySelector('#dialog-title').textContent = '网址暂未配置';
+    noticeMessage.textContent = '该系统暂未配置可直接打开的网址。';
   }
   notice.showModal();
 }
@@ -105,9 +115,10 @@ function renderCard(system) {
     detail('账号', isLocalPackage ? '安装后运行' : (system.username || '暂未配置'), 'user')
   );
   const action = node('div', 'card-action');
-  const button = node(state.desktopUrl && system.enabled ? 'a' : 'button', 'open-button');
+  const targetUrl = desktopOnlySystems.has(system.id) ? state.desktopUrl : system.url;
+  const button = node(targetUrl && system.enabled ? 'a' : 'button', 'open-button');
   if (button.tagName === 'A') {
-    button.href = state.desktopUrl;
+    button.href = targetUrl;
     button.target = '_blank';
     button.rel = 'noopener noreferrer';
   } else {
@@ -142,10 +153,10 @@ function render() {
 function setDesktopState(config) {
   if (typeof config.desktopUrl !== 'string' || !config.desktopUrl) {
     state.desktopUrl = '';
-    service.classList.add('is-error');
-    serviceLabel.textContent = '演示主机尚未接入';
-    note.dataset.state = 'error';
-    note.textContent = '当前网址托管的是静态导航页面。接入受保护的 Windows 演示桌面后，才能启动 Playwright 自动登录、密集架程序和艾搜客户端。';
+    service.classList.add('is-ready');
+    serviceLabel.textContent = '公网网页入口已加载';
+    note.dataset.state = 'ready';
+    note.textContent = '6 个公网网页系统可从卡片直接打开；GitHub Pages 不会自动填写账号密码。密集架需要单位 VPN/演示隧道，艾搜需要 Windows 客户端。';
     return;
   }
   let target;
@@ -155,9 +166,9 @@ function setDesktopState(config) {
   }
   state.desktopUrl = target.href;
   service.classList.add('is-ready');
-  serviceLabel.textContent = '受控演示桌面已接入';
+  serviceLabel.textContent = '公网网页与专用桌面入口已加载';
   note.dataset.state = 'ready';
-  note.textContent = '各系统入口共用授权 Windows 演示桌面。进入桌面后，在其中的导航台选择相同系统；共享桌面请轮流操作。';
+  note.textContent = '公网网页系统从卡片直接打开；密集架与艾搜共用授权 Windows 演示桌面，进入后请在桌面中的导航台选择对应系统。共享桌面请轮流操作。';
 }
 
 async function loadConfig() {
