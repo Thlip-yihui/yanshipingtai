@@ -153,7 +153,7 @@ h1>span { display: block; }
 .dialog-kicker { font-size: 8px; letter-spacing: .12em; color: #8a967f; }
 .notice-dialog h2 { font-size: 25px; letter-spacing: -.05em; font-weight: 750; margin: 10px 0 17px; }
 .notice-dialog p { color: #7d8872; font-size: 13px; line-height: 1.9; margin: 0 0 28px; overflow-wrap: anywhere; }
-.notice-dialog .open-button { padding: 12px 16px; justify-content: center; }
+.notice-dialog .open-button { padding: 12px 16px; justify-content: center; text-decoration: none; }
 .help-dialog { width: min(490px, calc(100% - 40px)); }
 .help-steps { list-style: none; padding: 0; margin: 25px 0 29px; }
 .help-steps li { display: flex; gap: 15px; margin-bottom: 20px; }

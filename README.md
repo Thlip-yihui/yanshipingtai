@@ -4,7 +4,7 @@
 
 **仅演示环境使用。** 账号密码保存在本机配置文件中，请勿将包含真实凭据的项目公开发布。
 
-**GitHub 与外网访问：** 仓库包含 GitHub Pages 自动发布工作流，推送至 `main` 后可发布公开导航网址。Pages 不运行 Node.js、Playwright 或 Windows 程序；7 个网页系统由页面直接打开目标网址，并由访问者本机的 Chrome/Edge 扩展自动填写。密集架需要单位网络或获准的 VPN/隧道；艾搜需要本机安装 Windows 客户端。若需通过远程桌面统一访问，则仍须另行部署受认证保护的 Windows 演示主机。
+**GitHub 与外网访问：** 仓库包含 GitHub Pages 自动发布工作流，推送至 `main` 后可发布公开导航网址。Pages 首页复用本机导航台的界面，不运行 Node.js、Playwright 或 Windows 程序；7 个网页系统由页面直接打开目标网址，并由访问者本机的 Chrome/Edge 扩展自动填写。密集架需要单位网络或获准的 VPN/隧道；艾搜需要本机安装 Windows 客户端，或配置获授权的远程 Windows 演示桌面。
 
 **无远程桌面的网页自动登录：** GitHub Pages 页面提供扩展 ZIP 下载和安装说明。每位使用者需在自己的 Chrome/Edge 安装扩展，并在本机保存密码一次；之后从 Pages 点击系统演示，扩展可填写并提交 7 个网页系统的登录表单。密码不进入 GitHub。验证码和二次验证仍由使用者处理。
 
@@ -186,7 +186,7 @@ npm run export:source
 
 `check` 检查本机静态配置和依赖，`check:network` 增加从当前主机进行的网页连通性检查；均不会提交真实账号或运行安装包。结果不代表真实登录、业务功能或外网远程桌面已验收。`npm run check:public` 会明确报告当前本机架构缺少直接公网演示能力并返回非零退出码。
 
-`pages:build` 在 `dist/pages` 构建可发布到 GitHub Pages 的纯静态导航页，包含扩展下载和安装指南。未配置 `DEMO_DESKTOP_URL` 时，7 个网页入口会直接打开目标网址；若配置了经认证的 HTTPS 远程桌面网址，则所有卡片改为进入该桌面。Pages 本身无法为访问者安装扩展或启动本机客户端。
+`pages:build` 在 `dist/pages` 构建可发布到 GitHub Pages 的纯静态导航页，复用本机首页结构、样式和卡片交互，并包含扩展下载和安装指南。网页系统入口直接打开目标网址；若配置了经认证的 HTTPS `DEMO_DESKTOP_URL`，密集架和艾搜入口会改为进入该远程桌面。Pages 本身无法为访问者安装扩展或启动本机客户端。
 
 `extension:build` 将不含密码的 Chrome/Edge 扩展构建到 `dist/archive-demo-login-extension`。Pages 工作流会将其打包并随静态站点发布。每位使用者需安装扩展并在本机填写密码一次；组织可通过浏览器策略预装扩展并安全下发本机凭据。艾搜客户端不受网页扩展控制。
 

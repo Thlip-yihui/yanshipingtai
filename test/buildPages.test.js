@@ -7,7 +7,7 @@ const os = require('node:os');
 const path = require('node:path');
 const { buildPages, normalizeDesktopUrl } = require('../scripts/build-pages');
 
-test('GitHub Pages builds a credential-free entry with a validated desktop URL', t => {
+test('GitHub Pages builds the shared local interface with a credential-free system list', t => {
   const projectRoot = path.resolve(__dirname, '..');
   const outputDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'archive-pages-test-'));
   fs.rmdirSync(outputDirectory);
@@ -16,12 +16,19 @@ test('GitHub Pages builds a credential-free entry with a validated desktop URL',
   assert.equal(result.remoteDesktopConfigured, true);
   assert.deepEqual(JSON.parse(fs.readFileSync(path.join(outputDirectory, 'demo-config.json'), 'utf8')),
     { desktopUrl: 'https://demo.example.org/guacamole/#/client/1' });
-  assert.ok(fs.existsSync(path.join(outputDirectory, 'index.html')));
+  const outputHtml = fs.readFileSync(path.join(outputDirectory, 'index.html'), 'utf8');
+  const sourceHtml = fs.readFileSync(path.join(projectRoot, 'public', 'index.html'), 'utf8');
+  assert.equal(outputHtml, sourceHtml.replace('<!-- GITHUB_PAGES_SYSTEMS -->', '<script src="./hosted.js" defer></script>'));
+  assert.match(outputHtml, /id="system-grid"/);
+  assert.match(outputHtml, /id="search-input"/);
   assert.ok(fs.existsSync(path.join(outputDirectory, 'hosted.js')));
+  assert.ok(fs.existsSync(path.join(outputDirectory, 'app.js')));
+  assert.ok(fs.existsSync(path.join(outputDirectory, 'style.css')));
   assert.ok(fs.existsSync(path.join(outputDirectory, 'extension-guide.html')));
   assert.ok(fs.existsSync(path.join(outputDirectory, 'downloads', 'archive-demo-login-extension.zip')));
-  assert.ok(!fs.existsSync(path.join(outputDirectory, 'app.js')));
   assert.ok(!fs.existsSync(path.join(outputDirectory, 'config')));
+  const staticScripts = `${fs.readFileSync(path.join(outputDirectory, 'hosted.js'), 'utf8')}\n${fs.readFileSync(path.join(outputDirectory, 'app.js'), 'utf8')}`;
+  assert.doesNotMatch(staticScripts, /password\s*:/i);
 });
 
 test('unconfigured Pages build stays accessible but leaves remote demonstration unavailable', t => {

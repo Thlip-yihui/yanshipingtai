@@ -12,7 +12,7 @@ const SOURCE_FILES = Object.freeze([
   'automation/openSystem.js', 'automation/openDemoProgram.js',
   'automation/openExternalBrowser.js', 'automation/openInstaller.js',
   'public/index.html', 'public/style.css', 'public/app.js',
-  'public/hosted.html', 'public/hosted.js', 'public/hosted.css', 'public/hosted-config.example.json',
+  'public/hosted.js', 'public/hosted.css', 'public/hosted-config.example.json',
   'public/extension-guide.html', 'public/downloads/archive-demo-login-extension.zip',
   'browser-extension/manifest.json', 'browser-extension/systems.js', 'browser-extension/background.js',
   'browser-extension/portal.js', 'browser-extension/content.js', 'browser-extension/login-runner.js',

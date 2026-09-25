@@ -1,6 +1,7 @@
 'use strict';
 
 const state = { systems: [], filter: 'all', search: '', operations: new Map(), loaded: false };
+const hostedMode = Array.isArray(globalThis.ArchiveDemoHostedSystems);
 const elements = {
   grid: document.querySelector('#system-grid'),
   empty: document.querySelector('#empty-state'),
@@ -10,6 +11,7 @@ const elements = {
   service: document.querySelector('#service-state'),
   serviceLabel: document.querySelector('#service-label'),
   dialog: document.querySelector('#notice-dialog'),
+  dialogTitle: document.querySelector('#dialog-title'),
   dialogMessage: document.querySelector('#dialog-message'),
 };
 
@@ -146,6 +148,12 @@ function refreshOperation(id) {
 }
 
 async function openSystem(system) {
+  if (hostedMode && system.id === 'aisou-file-agent' && !system.desktopUrl) {
+    elements.dialogTitle.textContent = '艾搜客户端需在本机运行';
+    elements.dialogMessage.textContent = 'GitHub Pages 无法启动访问者电脑上的 Windows 程序。请先在本机安装艾搜客户端，再从本机导航台打开。';
+    elements.dialog.showModal();
+    return;
+  }
   if (!system.enabled) {
     const message = system.unavailableMessage || (system.id === 'cadre-personnel-archive'
       ? '该系统暂未配置网址、账号和密码，按钮已预留。'
@@ -160,6 +168,18 @@ async function openSystem(system) {
     : '正在打开系统并尝试自动登录，请稍候…';
   state.operations.set(system.id, { tone: 'loading', message: loadingMessage });
   refreshOperation(system.id);
+  if (hostedMode) {
+    const target = system.desktopUrl || system.url;
+    const popup = target ? window.open(target, '_blank') : null;
+    if (popup) {
+      popup.opener = null;
+      state.operations.set(system.id, { tone: 'success', message: '系统已在新标签页打开；浏览器扩展将尝试自动填写。' });
+    } else {
+      state.operations.set(system.id, { tone: 'error', message: '浏览器拦截了新窗口，请允许此站点打开弹窗后重试。' });
+    }
+    refreshOperation(system.id);
+    return;
+  }
   try {
     const response = await fetch(`/api/open/${encodeURIComponent(system.id)}`, {
       method: 'POST',
@@ -187,6 +207,28 @@ async function loadSystems() {
   elements.retry.hidden = true;
   elements.grid.setAttribute('aria-busy', 'true');
   elements.service.className = 'service-state';
+  if (hostedMode) {
+    let desktopUrl = '';
+    try {
+      const response = await fetch('./demo-config.json', { cache: 'no-store' });
+      if (response.ok) {
+        const config = await response.json();
+        const target = new URL(config.desktopUrl);
+        if (target.protocol === 'https:' && !target.username && !target.password) desktopUrl = target.href;
+      }
+    } catch {
+      // Public system links remain usable if the optional desktop config is unavailable.
+    }
+    state.systems = globalThis.ArchiveDemoHostedSystems.map(system => ({
+      ...system,
+      ...(desktopUrl && ['dense-shelf-platform', 'aisou-file-agent'].includes(system.id) ? { desktopUrl } : {})
+    }));
+    state.loaded = true;
+    elements.service.classList.add('is-ready');
+    elements.serviceLabel.textContent = '公网系统入口已加载';
+    render();
+    return;
+  }
   elements.serviceLabel.textContent = '正在连接本地服务';
   try {
     const response = await fetch('/api/systems', { headers: { Accept: 'application/json' }, cache: 'no-store' });
@@ -226,6 +268,26 @@ document.querySelector('#search-input').addEventListener('input', event => {
 });
 elements.retry.addEventListener('click', loadSystems);
 document.querySelector('#help-button')?.addEventListener('click', () => {
+  if (hostedMode) {
+    const dialog = document.querySelector('#help-dialog');
+    dialog.querySelector('.dialog-kicker').textContent = 'CHROME / EDGE';
+    dialog.querySelector('#help-title').textContent = '首次设置登录信息';
+    const steps = [
+      ['安装扩展', '下载并加载自动登录扩展。每位用户在自己的浏览器中安装一次。'],
+      ['保存密码', '在扩展设置页填写需要演示的系统密码并保存。密码保存在当前浏览器。'],
+      ['打开系统', '回到这里点击「系统演示」，扩展会尝试自动填写并提交登录。'],
+    ];
+    dialog.querySelectorAll('.help-steps li').forEach((item, index) => {
+      item.querySelector('strong').textContent = steps[index][0];
+      item.querySelector('p').textContent = steps[index][1];
+    });
+    const closeButton = dialog.querySelector('button[type="submit"]');
+    if (closeButton) {
+      const guideLink = node('a', 'open-button', '查看安装说明');
+      guideLink.href = './extension-guide.html';
+      closeButton.replaceWith(guideLink);
+    }
+  }
   document.querySelector('#help-dialog')?.showModal();
 });
 loadSystems();
