@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "档案演示自动登录",
+  "version": "1.0.1",
+  "description": "在已配置的档案演示系统登录页自动填写并提交账号。",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://thlip-yihui.github.io/yanshipingtai/*",
+    "http://47.115.224.12/*",
+    "http://47.113.229.248/*",
+    "http://47.120.38.133/*",
+    "http://192.168.3.251/*",
+    "http://a.wenzhi.icu/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://thlip-yihui.github.io/yanshipingtai/*"],
+      "js": ["systems.js", "portal.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "http://47.115.224.12/*",
+        "http://47.113.229.248/*",
+        "http://47.120.38.133/*",
+        "http://192.168.3.251/*",
+        "http://a.wenzhi.icu/*"
+      ],
+      "js": ["systems.js", "login-runner.js", "content.js"],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ],
+  "options_page": "options.html",
+  "action": {
+    "default_title": "配置档案演示登录信息"
+  }
+}

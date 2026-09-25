@@ -4,7 +4,9 @@
 
 **仅演示环境使用。** 账号密码保存在本机配置文件中，请勿将包含真实凭据的项目公开发布。
 
-**GitHub 与外网访问：** 仓库包含 GitHub Pages 自动发布工作流，推送至 `main` 后可发布公开导航网址。6 个公网网页系统可由 Pages 卡片直接打开目标网址，但需用户自行登录；静态网站不能运行 Node.js、Playwright 或自动填写凭据。密集架位于私有网络，艾搜是 Windows 客户端，这两个入口需单位 VPN 或已部署且经过身份验证的 Windows 演示桌面。请按 [GitHub Pages 与外网部署说明](docs/DEPLOYMENT.md) 设置 `DEMO_DESKTOP_URL`。Pages 展示数据位于 `public/hosted.js`，只包含公开系统信息与账号名，不包含密码；新增系统时需同时更新本机配置与该静态展示清单。
+**GitHub 与外网访问：** 仓库包含 GitHub Pages 自动发布工作流，推送至 `main` 后可发布公开导航网址。Pages 不运行 Node.js、Playwright 或 Windows 程序；7 个网页系统由页面直接打开目标网址，并由访问者本机的 Chrome/Edge 扩展自动填写。密集架需要单位网络或获准的 VPN/隧道；艾搜需要本机安装 Windows 客户端。若需通过远程桌面统一访问，则仍须另行部署受认证保护的 Windows 演示主机。
+
+**无远程桌面的网页自动登录：** GitHub Pages 页面提供扩展 ZIP 下载和安装说明。每位使用者需在自己的 Chrome/Edge 安装扩展，并在本机保存密码一次；之后从 Pages 点击系统演示，扩展可填写并提交 7 个网页系统的登录表单。密码不进入 GitHub。验证码和二次验证仍由使用者处理。
 
 界面采用白底网格、大字号标题、荧光绿点缀和档案主题漂浮图形。点击「探索系统入口」可跳转到卡片区，支持按配置状态筛选、搜索系统，以及查看使用说明。桌面使用多列卡片，手机使用单列阅读布局；全部图形由原生 CSS/SVG 绘制，无需加载外部图片或字体。
 
@@ -59,7 +61,7 @@ archive-demo-nav/
 
 ## 系统配置
 
-修改 `config/systems.js` 后重启服务生效。交付目录中的本机配置包含指定的演示系统；通过 Git 获取项目时，该文件不会被提交，需要先复制示例并填写配置。GitHub Pages 的系统卡片不读取本机 API，如需更新公开名称、网址、账号或配置状态，还需编辑 `public/hosted.js`。
+修改 `config/systems.js` 后重启服务生效。交付目录中的本机配置包含指定的演示系统；通过 Git 获取项目时，该文件不会被提交，需要先复制示例并填写配置。
 
 Windows PowerShell：
 
@@ -184,6 +186,8 @@ npm run export:source
 
 `check` 检查本机静态配置和依赖，`check:network` 增加从当前主机进行的网页连通性检查；均不会提交真实账号或运行安装包。结果不代表真实登录、业务功能或外网远程桌面已验收。`npm run check:public` 会明确报告当前本机架构缺少直接公网演示能力并返回非零退出码。
 
-`pages:build` 在 `dist/pages` 构建可发布到 GitHub Pages 的纯静态导航页。6 个公网网页系统直接链接到目标登录页；Pages 不会自动填写账号密码。密集架和艾搜在未配置远程桌面时显示网络/客户端要求，配置 `DEMO_DESKTOP_URL` 后，这两个专用入口会进入共用的受保护 Windows 桌面。GitHub Actions Pages 工作流从仓库变量读取该网址，并输出部署成功后的访问 URL。
+`pages:build` 在 `dist/pages` 构建可发布到 GitHub Pages 的纯静态导航页，包含扩展下载和安装指南。未配置 `DEMO_DESKTOP_URL` 时，7 个网页入口会直接打开目标网址；若配置了经认证的 HTTPS 远程桌面网址，则所有卡片改为进入该桌面。Pages 本身无法为访问者安装扩展或启动本机客户端。
 
-`export:source` 在 `dist/` 创建新的源码交付目录，采用文件清单排除真实配置、安装包和隧道文件。将该目录内容放在 GitHub 仓库根目录，保留 `.github`、`.gitignore` 与 `package-lock.json`。仓库包含 Windows/Ubuntu 测试工作流和 GitHub Pages 发布工作流；Pages 只托管导航入口，不是远程演示主机。
+`extension:build` 将不含密码的 Chrome/Edge 扩展构建到 `dist/archive-demo-login-extension`。Pages 工作流会将其打包并随静态站点发布。每位使用者需安装扩展并在本机填写密码一次；组织可通过浏览器策略预装扩展并安全下发本机凭据。艾搜客户端不受网页扩展控制。
+
+`export:source` 在 `dist/` 创建新的源码交付目录，采用文件清单排除真实配置、安装包和隧道文件。将该目录内容放在 GitHub 仓库根目录，保留 `.github`、`.gitignore` 与 `package-lock.json`。仓库包含 Windows/Ubuntu 测试工作流和 GitHub Pages 发布工作流；Pages 托管导航页和不含密码的扩展，不是远程演示主机。

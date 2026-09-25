@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light" />
     <meta name="theme-color" content="#ffffff" />
-    <meta name="description" content="档案系统演示导航台：从档案管理到智能设备，一站开启演示。" />
+    <meta name="description" content="档案系统演示入口，支持通过本机浏览器扩展自动填写网页系统登录信息。" />
     <title>档案系统演示导航台</title>
     <link rel="stylesheet" href="./style.css" />
     <link rel="stylesheet" href="./hosted.css" />
@@ -20,80 +20,31 @@
       </a>
       <nav class="header-nav" aria-label="主导航">
         <a class="nav-link" href="#systems">系统入口</a>
-        <button class="nav-link" id="help-button" type="button">使用说明</button>
-        <a class="header-cta" href="#systems">开始演示 <span aria-hidden="true">↗</span></a>
+        <a class="nav-link" href="./extension-guide.html">自动登录扩展</a>
+        <span class="desktop-state" id="desktop-state" role="status" aria-live="polite">正在读取演示入口</span>
       </nav>
     </header>
     <main>
-      <section class="hero" aria-labelledby="page-title">
-        <div class="hero-art" aria-hidden="true">
-          <div class="orbit-ring"></div>
-          <div class="floating-object folder-object">
-            <span class="folder-back"></span><span class="folder-paper"><i></i><i></i><i></i></span>
-            <span class="folder-front"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zM14 3v5h4M9 12h6M9 16h6" /></svg><small>ARCHIVE</small></span>
-            <span class="object-caption">每一份档案，都有归处。</span>
-          </div>
-          <div class="floating-object search-object"><svg viewBox="0 0 100 100"><circle cx="42" cy="41" r="22"/><path d="m59 58 19 20"/><path class="lens-glint" d="M30 40a12 12 0 0 1 12-12"/></svg><span class="search-spark">✦</span></div>
-          <div class="floating-object cabinet-object"><span class="cabinet-top">SMART FILES <i></i></span><div><span></span><span></span><span></span></div><b>让管理，更聪明。</b></div>
-          <div class="floating-object star-object"><svg viewBox="0 0 100 100"><path d="m50 3 9 28 25-15-15 25 28 9-28 9 15 25-25-15-9 28-9-28-25 15 15-25L3 50l28-9-15-25 25 15z" /></svg></div>
-          <span class="decoration-dot dot-one"></span><span class="decoration-dot dot-two"></span>
+      <section class="hosted-intro" aria-labelledby="page-title">
+        <p class="eyebrow"><span></span> SECURE ARCHIVE DEMO</p>
+        <h1 id="page-title">档案系统演示导航台</h1>
+        <p class="hosted-lede">选择要演示的系统，在新标签页中打开。</p>
+        <p class="hosted-explainer">安装浏览器扩展并保存本机密码后，可自动填写网页系统登录信息。</p>
+        <div class="hosted-actions">
+          <a class="hosted-launch" href="./downloads/archive-demo-login-extension.zip" download>下载自动登录扩展</a>
+          <a class="hosted-secondary" href="./extension-guide.html">安装说明</a>
+          <a class="hosted-launch" id="desktop-launch" href="#systems" hidden>进入 Windows 演示桌面</a>
         </div>
-        <div class="hero-copy">
-          <p class="eyebrow"><span></span> YOUR ARCHIVE. ONE WORKSPACE.</p>
-          <h1 id="page-title">档案系统<span>演示导航台<span class="title-dot">.</span></span></h1>
-          <p class="hero-handwritten">让每一次演示，一触即达。</p>
-          <p class="hero-description">从数字档案到智能设备，在这里连接每一种可能。</p>
-          <a class="hero-cta" href="#systems"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 3 5.5 17 3-7.5L20 9.5 4 3zM13 13l6 6"/></svg>探索系统入口<span aria-hidden="true">↗</span></a>
-        </div>
-        <span class="hero-bottom-label" aria-hidden="true">BUILT FOR YOUR NEXT DEMO</span>
       </section>
-      <section class="workspace main-shell" id="systems" aria-labelledby="systems-title" tabindex="-1">
+      <section class="hosted-systems main-shell" id="systems" aria-labelledby="systems-title">
         <div class="section-heading">
-          <div class="section-title"><h2 id="systems-title">选择系统，开启演示<span class="heading-dot">.</span></h2></div>
-          <span class="service-state" id="service-state" role="status" aria-live="polite"><span class="state-dot"></span><span id="service-label">正在读取演示配置</span></span>
+          <div class="section-title"><h2 id="systems-title">系统入口</h2></div>
+          <span class="system-count">8 个系统</span>
         </div>
-        <div class="toolbar">
-          <div class="filters" role="group" aria-label="筛选系统">
-            <button type="button" class="filter is-active" data-filter="all" aria-pressed="true">全部系统</button>
-            <button type="button" class="filter" data-filter="enabled" aria-pressed="false">已配置</button>
-            <button type="button" class="filter" data-filter="reserved" aria-pressed="false">待配置</button>
-          </div>
-          <label class="search-box">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
-            <input id="search-input" type="search" placeholder="搜索系统名称、网址或账号" aria-label="搜索系统名称、网址或账号" autocomplete="off" />
-            <span aria-hidden="true">⌕</span>
-          </label>
-        </div>
-        <div class="system-grid" id="system-grid" aria-busy="true"></div>
-        <div class="empty-state" id="empty-state" hidden>
-          <span class="empty-symbol" aria-hidden="true">⌕</span>
-          <h3 id="empty-title">正在载入系统</h3>
-          <p id="empty-message">请稍候，正在读取公开演示入口。</p>
-        </div>
-        <p class="hosted-note" id="hosted-note" role="status" aria-live="polite"></p>
+        <div class="hosted-grid" id="system-grid" aria-busy="true"></div>
+        <p class="hosted-note" id="desktop-note" role="status" aria-live="polite"></p>
       </section>
     </main>
-    <dialog id="notice-dialog" class="notice-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-message">
-      <form method="dialog">
-        <span class="dialog-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg></span>
-        <span class="dialog-kicker">DEMO ENVIRONMENT</span>
-        <h2 id="dialog-title">系统演示需要专用环境</h2>
-        <p id="dialog-message"></p>
-        <button type="submit" class="open-button">我知道了</button>
-      </form>
-    </dialog>
-    <dialog id="help-dialog" class="notice-dialog help-dialog" aria-labelledby="help-title">
-      <form method="dialog">
-        <span class="dialog-kicker">READY, SET, DEMO.</span>
-        <h2 id="help-title">三步，开始演示</h2>
-        <ol class="help-steps">
-          <li><span>01</span><div><strong>打开网页系统</strong><p>公网系统会在新标签页打开登录页面。</p></div></li>
-          <li><span>02</span><div><strong>登录系统</strong><p>GitHub Pages 不会自动填写账号密码，请在目标系统登录页完成登录。</p></div></li>
-          <li><span>03</span><div><strong>连接专用环境</strong><p>密集架需要单位 VPN 或演示隧道；艾搜需要已安装客户端的 Windows 演示桌面。</p></div></li>
-        </ol>
-        <button type="submit" class="open-button">开始体验 <span aria-hidden="true">↗</span></button>
-      </form>
-    </dialog>
-    <footer class="hosted-footer">演示环境仅供授权用户使用。登录账号由演示管理员维护。</footer>
+    <footer class="hosted-footer">演示系统入口及账号由所属单位授权管理。</footer>
   </body>
 </html>

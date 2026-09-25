@@ -13,11 +13,17 @@ const SOURCE_FILES = Object.freeze([
   'automation/openExternalBrowser.js', 'automation/openInstaller.js',
   'public/index.html', 'public/style.css', 'public/app.js',
   'public/hosted.html', 'public/hosted.js', 'public/hosted.css', 'public/hosted-config.example.json',
-  'scripts/build-pages.js', 'scripts/check-readiness.js', 'scripts/export-source.js',
+  'public/extension-guide.html', 'public/downloads/archive-demo-login-extension.zip',
+  'browser-extension/manifest.json', 'browser-extension/systems.js', 'browser-extension/background.js',
+  'browser-extension/portal.js', 'browser-extension/content.js', 'browser-extension/login-runner.js',
+  'browser-extension/options.html', 'browser-extension/options.js', 'browser-extension/options.css',
+  'browser-extension/README.md',
+  'scripts/build-extension.js', 'scripts/build-pages.js', 'scripts/check-readiness.js', 'scripts/export-source.js',
   'test/automation.test.js', 'test/externalBrowser.test.js',
   'test/frontend.test.js', 'test/installer.test.js',
   'test/openDemoProgram.test.js', 'test/server.test.js',
-  'test/readiness.test.js', 'test/export-source.test.js', 'test/buildPages.test.js', 'test/hostedPortal.test.js'
+  'test/readiness.test.js', 'test/export-source.test.js', 'test/buildPages.test.js', 'test/hostedPortal.test.js',
+  'test/browserExtension.test.js'
 ]);
 
 function exportSource(root = path.resolve(__dirname, '..')) {

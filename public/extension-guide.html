@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>自动登录扩展安装说明 - 档案系统演示导航台</title>
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./hosted.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="档案系统演示导航台首页">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4h16v5H4zM6 9v11h12V9M10 13h4M9 4v5M15 4v5" /></svg></span>
+        <span>档案演示<span class="brand-secondary">ARCHIVE DEMO</span></span>
+      </a>
+      <nav class="header-nav" aria-label="主导航"><a class="nav-link" href="./#systems">系统入口</a></nav>
+    </header>
+    <main class="extension-guide">
+      <p class="eyebrow">CHROME / EDGE</p>
+      <h1>自动登录扩展</h1>
+      <p>扩展在访问者自己的 Chrome 或 Edge 中运行。安装并保存密码后，从系统入口打开网页系统时，扩展会尝试填写并提交登录表单。</p>
+      <div class="guide-actions">
+        <a class="hosted-launch" href="./downloads/archive-demo-login-extension.zip" download>下载扩展 ZIP</a>
+        <a class="hosted-secondary" href="./">返回系统入口</a>
+      </div>
+      <h2>安装与设置</h2>
+      <ol>
+        <li>解压下载的 ZIP，找到包含 <code>manifest.json</code> 的 <code>archive-demo-login-extension</code> 文件夹。</li>
+        <li>在 Chrome 打开 <code>chrome://extensions</code>，或在 Edge 打开 <code>edge://extensions</code>，启用“开发人员模式”。</li>
+        <li>选择“加载解压缩的扩展”，加载上一步的文件夹。</li>
+        <li>打开扩展详情中的“扩展程序选项”，检查账号并填写各系统密码，点击保存。</li>
+        <li>返回系统入口并点击“系统演示”。登录页会自动填写；遇到验证码、短信码或二次验证时，请按页面提示人工处理。</li>
+      </ol>
+      <h2>连接要求</h2>
+      <p>六个公网网页系统可从外网打开。密集架位于单位内网，使用者电脑必须连接单位网络或获准的 VPN/隧道。艾搜是 Windows 客户端，浏览器扩展不能安装或启动该客户端。</p>
+      <p class="guide-warning">目标系统当前使用 HTTP，登录密码传输未加密。只在可信网络中演示；不要把本机密码或含真实凭据的文件上传到公开仓库。</p>
+    </main>
+    <footer class="hosted-footer">扩展不会绕过验证码或二次验证。</footer>
+  </body>
+</html>

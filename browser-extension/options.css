@@ -1,0 +1,59 @@
+:root {
+  color-scheme: light;
+  font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+  color: #202b3c;
+  background: #f5f7fa;
+}
+
+* { box-sizing: border-box; }
+
+body { margin: 0; }
+
+main { width: min(960px, calc(100% - 32px)); margin: 32px auto 64px; }
+
+header { padding: 0 0 20px; border-bottom: 1px solid #d7dee8; }
+
+.eyebrow { margin: 0 0 8px; color: #1677ff; font-size: 12px; font-weight: 700; }
+
+h1 { margin: 0; font-size: 24px; }
+
+.privacy { max-width: 720px; margin: 12px 0 0; color: #526174; line-height: 1.6; }
+
+.systems { display: grid; gap: 0; }
+
+.system-row { padding: 20px 0; border-bottom: 1px solid #d7dee8; }
+
+.system-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+
+h2 { margin: 0 0 12px; font-size: 17px; }
+
+code { max-width: 55%; overflow-wrap: anywhere; color: #627187; font-size: 12px; }
+
+.credential-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+
+.field { display: grid; gap: 6px; min-width: 0; color: #526174; font-size: 13px; }
+
+.field input { width: 100%; min-height: 40px; padding: 8px 10px; border: 1px solid #c5cfdb; border-radius: 4px; background: #fff; color: #202b3c; font: inherit; }
+
+.field input:focus { border-color: #1677ff; outline: 2px solid #1677ff33; }
+
+details { margin-top: 12px; }
+
+summary { width: fit-content; color: #526174; cursor: pointer; font-size: 13px; }
+
+.selector-fields { margin-top: 12px; }
+
+.actions { position: sticky; bottom: 0; display: flex; align-items: center; gap: 14px; margin: 20px -16px 0; padding: 14px 16px; border-top: 1px solid #d7dee8; background: #f5f7faf2; }
+
+button { min-width: 120px; min-height: 40px; padding: 8px 16px; border: 0; border-radius: 4px; background: #1677ff; color: #fff; font: inherit; cursor: pointer; }
+
+button:hover { background: #0958d9; }
+
+#save-status { color: #21936b; font-size: 13px; }
+
+@media (max-width: 620px) {
+  main { margin-top: 20px; }
+  .system-heading { display: block; }
+  code { display: block; max-width: 100%; margin: -6px 0 12px; }
+  .credential-fields { grid-template-columns: 1fr; }
+}

@@ -10,6 +10,10 @@ on:
       - 'public/hosted.js'
       - 'public/style.css'
       - 'public/hosted-config.example.json'
+      - 'public/extension-guide.html'
+      - 'public/downloads/archive-demo-login-extension.zip'
+      - 'browser-extension/**'
+      - 'scripts/build-extension.js'
       - 'scripts/build-pages.js'
   workflow_dispatch:
 
@@ -28,6 +32,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Package credential-free browser extension
+        run: |
+          node scripts/build-extension.js
+          mkdir -p public/downloads
+          cd dist
+          zip -q -r archive-demo-login-extension-build.zip archive-demo-login-extension
+          cd ..
+          cp dist/archive-demo-login-extension-build.zip public/downloads/archive-demo-login-extension.zip
       - name: Build credential-free portal
         run: node scripts/build-pages.js
         env:

@@ -18,6 +18,8 @@ test('GitHub Pages builds a credential-free entry with a validated desktop URL',
     { desktopUrl: 'https://demo.example.org/guacamole/#/client/1' });
   assert.ok(fs.existsSync(path.join(outputDirectory, 'index.html')));
   assert.ok(fs.existsSync(path.join(outputDirectory, 'hosted.js')));
+  assert.ok(fs.existsSync(path.join(outputDirectory, 'extension-guide.html')));
+  assert.ok(fs.existsSync(path.join(outputDirectory, 'downloads', 'archive-demo-login-extension.zip')));
   assert.ok(!fs.existsSync(path.join(outputDirectory, 'app.js')));
   assert.ok(!fs.existsSync(path.join(outputDirectory, 'config')));
 });

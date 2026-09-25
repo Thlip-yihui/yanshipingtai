@@ -7,7 +7,9 @@ const PUBLIC_FILES = Object.freeze([
   ['public/hosted.html', 'index.html'],
   ['public/hosted.js', 'hosted.js'],
   ['public/hosted.css', 'hosted.css'],
-  ['public/style.css', 'style.css']
+  ['public/style.css', 'style.css'],
+  ['public/extension-guide.html', 'extension-guide.html'],
+  ['public/downloads/archive-demo-login-extension.zip', 'downloads/archive-demo-login-extension.zip']
 ]);
 const BUILD_MARKER = '.archive-demo-pages-generated';
 
@@ -41,7 +43,9 @@ function buildPages({ projectRoot = path.resolve(__dirname, '..'), outputDirecto
   }
   fs.mkdirSync(destination, { recursive: true });
   for (const [source, target] of PUBLIC_FILES) {
-    fs.copyFileSync(path.join(projectRoot, source), path.join(destination, target), fs.constants.COPYFILE_EXCL);
+    const outputPath = path.join(destination, target);
+    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+    fs.copyFileSync(path.join(projectRoot, source), outputPath, fs.constants.COPYFILE_EXCL);
   }
   fs.writeFileSync(path.join(destination, 'demo-config.json'), `${JSON.stringify({ desktopUrl: normalizedUrl })}\n`, {
     encoding: 'utf8', flag: 'wx'
@@ -56,7 +60,7 @@ if (require.main === module) {
     console.info(`GitHub Pages 静态站点已构建：${result.destination}`);
     console.info(result.remoteDesktopConfigured
       ? '已配置 HTTPS 远程桌面入口。'
-      : '远程桌面未配置：6 个公网网页链接仍可直达；密集架和艾搜需要专用网络或 Windows 桌面。请按需设置 DEMO_DESKTOP_URL。');
+      : '远程桌面未配置：7 个网页入口直接打开目标网址；密集架需要单位网络，艾搜客户端入口保持待配置。');
   } catch (error) {
     console.error(`GitHub Pages 构建失败：${error.message}`);
     process.exitCode = 1;

@@ -9,9 +9,11 @@ test-results/
 dist/
 reports/
 config/*.local.*
+browser-extension/credentials.local.json
 *.exe
 *.msi
 *.zip
+!public/downloads/archive-demo-login-extension.zip
 *.7z
 *.rar
 *.pem

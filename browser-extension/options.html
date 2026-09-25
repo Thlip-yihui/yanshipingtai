@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>档案演示自动登录设置</title>
+    <link rel="stylesheet" href="options.css">
+    <script src="systems.js" defer></script>
+    <script src="options.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">ARCHIVE DEMO</p>
+        <h1>自动登录设置</h1>
+        <p class="privacy">账号密码只保存在当前浏览器的扩展本地存储，不会发送到 GitHub。保存后请重新打开系统页面。</p>
+      </header>
+      <form id="settings-form">
+        <div id="systems" class="systems" aria-busy="true"></div>
+        <div class="actions">
+          <button type="submit">保存设置</button>
+          <span id="save-status" role="status" aria-live="polite"></span>
+        </div>
+      </form>
+    </main>
+  </body>
+</html>

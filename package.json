@@ -11,6 +11,7 @@
     "check:network": "node scripts/check-readiness.js --network",
     "check:public": "node scripts/check-readiness.js --public",
     "pages:build": "node scripts/build-pages.js",
+    "extension:build": "node scripts/build-extension.js",
     "export:source": "node scripts/export-source.js"
   },
   "engines": { "node": ">=20" },
