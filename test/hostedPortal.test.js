@@ -44,6 +44,7 @@ async function openPortal(t, desktopUrl) {
 test('public portal shows seven direct web links and leaves the Windows client reserved', async t => {
   const { page } = await openPortal(t, '');
   await page.getByText('7 个网页系统入口', { exact: true }).waitFor();
+  assert.match(await page.locator('#desktop-note').textContent(), /每个浏览器首次.*保存.*一次/);
   assert.equal(await page.locator('.hosted-card').count(), 8);
   assert.equal(await page.locator('.hosted-card a[aria-disabled="true"]').count(), 1);
   assert.equal(await page.locator('.hosted-card a.open-button:not([aria-disabled="true"])').count(), 7);
@@ -73,6 +74,7 @@ test('configured portal keeps public websites direct and routes private desktop 
   assert.equal(popup.url(), desktopUrl);
   await page.goto(new URL('/extension-guide.html', page.url()).href);
   assert.equal(await page.getByRole('heading', { name: '自动登录扩展' }).count(), 1);
+  assert.match(await page.locator('main').textContent(), /每个浏览器首次.*密码一次/);
   await page.setViewportSize({ width: 360, height: 780 });
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
   assert.deepEqual(errors, []);

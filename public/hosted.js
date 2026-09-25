@@ -49,7 +49,7 @@ function renderDirectLinks() {
   grid.setAttribute('aria-busy', 'false');
   state.textContent = '7 个网页系统入口';
   state.dataset.state = 'ready';
-  note.textContent = '安装浏览器扩展并在本机保存密码后，网页系统可自动填写登录信息。密集架需连接单位网络或获准的 VPN/隧道；艾搜是 Windows 客户端，需在本机另行安装。目标系统使用 HTTP，密码传输未加密。';
+  note.textContent = '每个浏览器首次在扩展设置中保存所需系统密码一次；以后点击系统演示，扩展会自动填写。密集架需连接单位网络或获准的 VPN/隧道；艾搜是 Windows 客户端，需在本机另行安装。目标系统使用 HTTP，密码传输未加密。';
 }
 
 async function loadConfig() {
