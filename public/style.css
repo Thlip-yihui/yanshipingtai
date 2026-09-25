@@ -114,6 +114,8 @@ h1>span { display: block; }
 .card-number { color: #717a68; font-size: 11px; font-variant-numeric: tabular-nums; font-family: "Consolas", monospace; }
 .card-badge { display: flex; align-items: center; gap: 5px; color: #587b4b; font-size: 10px; white-space: nowrap; }
 .card-badge::before { content: ""; display: block; width: 4px; height: 4px; border-radius: 50%; background: #59bc71; }
+.card-badge[data-credential-state="missing"] { color: #a56d2e; }
+.card-badge[data-credential-state="missing"]::before { background: #e0a33d; }
 .system-card h3 { font-size: 16px; line-height: 1.6; letter-spacing: -.025em; font-weight: 750; margin: 0 0 6px; overflow-wrap: anywhere; }
 .card-description { color: #6f7768; font-size: 11px; margin: 0 0 21px; line-height: 1.65; }
 .card-details { margin: auto 0 0; padding-top: 15px; border-top: 1px dashed #e8ece3; display: flex; flex-direction: column; gap: 8px; }

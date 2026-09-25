@@ -50,7 +50,7 @@ test('GitHub Pages reuses the local portal layout, controls, and system order', 
     '综合档案管理系统', '干部人事档案管理系统', '综合单机版档案系统', '艾搜文件智能体'
   ]);
   assert.equal(await page.locator('.system-card .open-button').first().textContent(), '系统演示');
-  assert.equal(await page.locator('#service-label').textContent(), '公网系统入口已加载');
+  assert.equal(await page.locator('#service-label').textContent(), '公网入口已加载 · 自动登录需要浏览器扩展');
   assert.equal(await page.locator('#search-input').count(), 1);
   assert.equal(await page.locator('[data-filter]').count(), 3);
   assert.equal(await page.locator('.system-card[data-system-id="paperless-go"] .detail-row dd').first().textContent(), 'http://47.113.229.248:4000/');
@@ -67,7 +67,8 @@ test('GitHub Pages reuses the local portal layout, controls, and system order', 
 
   await page.getByRole('button', { name: '使用说明' }).click();
   assert.equal(await page.getByRole('heading', { name: '首次设置登录信息' }).count(), 1);
-  assert.match(await page.locator('#help-dialog').innerText(), /每位用户在自己的浏览器中安装一次/);
+  assert.match(await page.locator('#help-dialog').innerText(), /GitHub 网页无法替浏览器安装扩展/);
+  assert.match(await page.locator('#help-dialog').innerText(), /保存各系统密码/);
   const guideLink = page.getByRole('link', { name: '查看安装说明' });
   assert.equal(await guideLink.getAttribute('href'), './extension-guide.html');
   assert.equal(await guideLink.evaluate(element => getComputedStyle(element).textDecorationLine), 'none');
@@ -95,7 +96,7 @@ test('hosted system action opens the configured target and local-only client exp
 
   await page.goto(new URL('/extension-guide.html', page.url()).href);
   assert.equal(await page.getByRole('heading', { name: '自动登录扩展' }).count(), 1);
-  assert.match(await page.locator('main').textContent(), /每个浏览器首次填写并保存.*密码一次/);
+  assert.match(await page.locator('main').textContent(), /首次安装一次扩展，再为需要演示的系统分别保存密码/);
   assert.equal(await page.getByRole('link', { name: '下载扩展 ZIP' }).getAttribute('href'), './downloads/archive-demo-login-extension.zip');
   await page.setViewportSize({ width: 360, height: 780 });
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));

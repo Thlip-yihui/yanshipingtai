@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "档案演示自动登录",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "在已配置的档案演示系统登录页自动填写并提交账号。",
   "permissions": ["storage"],
   "host_permissions": [

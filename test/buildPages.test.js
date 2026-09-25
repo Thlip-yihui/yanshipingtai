@@ -18,7 +18,9 @@ test('GitHub Pages builds the shared local interface with a credential-free syst
     { desktopUrl: 'https://demo.example.org/guacamole/#/client/1' });
   const outputHtml = fs.readFileSync(path.join(outputDirectory, 'index.html'), 'utf8');
   const sourceHtml = fs.readFileSync(path.join(projectRoot, 'public', 'index.html'), 'utf8');
-  assert.equal(outputHtml, sourceHtml.replace('<!-- GITHUB_PAGES_SYSTEMS -->', '<script src="./hosted.js" defer></script>'));
+  assert.equal(outputHtml, sourceHtml
+    .replace('<!-- GITHUB_PAGES_SYSTEMS -->', '<script src="./hosted.js" defer></script>')
+    .replace('<!-- GITHUB_PAGES_SETUP_LINK -->', '<a class="nav-link" id="extension-settings-link" href="./extension-guide.html">配置自动登录</a>'));
   assert.match(outputHtml, /id="system-grid"/);
   assert.match(outputHtml, /id="search-input"/);
   assert.ok(fs.existsSync(path.join(outputDirectory, 'hosted.js')));

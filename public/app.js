@@ -104,7 +104,9 @@ function renderCard(system) {
   mark.append(icon(iconName));
   const meta = node('div', 'card-top-meta');
   const number = String(state.systems.findIndex(item => item.id === system.id) + 1).padStart(2, '0');
-  meta.append(node('span', 'card-number', number), node('span', 'card-badge', system.enabled ? '已配置' : '入口预留'));
+  meta.append(node('span', 'card-number', number), node('span', 'card-badge', hostedMode && !localPackageSystems.has(system.id)
+    ? '先安装扩展'
+    : system.enabled ? '已配置' : '入口预留'));
   top.append(mark, meta);
   const name = node('h3', '', system.name);
   const description = node('p', 'card-description', descriptions[system.id] || '统一入口，便捷访问。');
@@ -225,7 +227,7 @@ async function loadSystems() {
     }));
     state.loaded = true;
     elements.service.classList.add('is-ready');
-    elements.serviceLabel.textContent = '公网系统入口已加载';
+    elements.serviceLabel.textContent = '公网入口已加载 · 自动登录需要浏览器扩展';
     render();
     return;
   }
@@ -273,9 +275,9 @@ document.querySelector('#help-button')?.addEventListener('click', () => {
     dialog.querySelector('.dialog-kicker').textContent = 'CHROME / EDGE';
     dialog.querySelector('#help-title').textContent = '首次设置登录信息';
     const steps = [
-      ['安装扩展', '下载并加载自动登录扩展。每位用户在自己的浏览器中安装一次。'],
-      ['保存密码', '在扩展设置页填写需要演示的系统密码并保存。密码保存在当前浏览器。'],
-      ['打开系统', '回到这里点击「系统演示」，扩展会尝试自动填写并提交登录。'],
+      ['安装扩展一次', '下载扩展并在 Chrome 或 Edge 中加载。GitHub 网页无法替浏览器安装扩展。'],
+      ['保存各系统密码', '点击「配置自动登录」，为需要演示的系统填写密码并保存。密码只保存在当前浏览器。'],
+      ['开始演示', '回到这里点击「系统演示」。卡片会显示密码是否已保存，扩展会自动填写并提交登录。'],
     ];
     dialog.querySelectorAll('.help-steps li').forEach((item, index) => {
       item.querySelector('strong').textContent = steps[index][0];

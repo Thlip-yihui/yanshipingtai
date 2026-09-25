@@ -5,6 +5,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const http = require('node:http');
 const path = require('node:path');
+const vm = require('node:vm');
 const { chromium } = require('playwright');
 const { buildExtension } = require('../scripts/build-extension');
 
@@ -62,6 +63,7 @@ test('extension build contains no credentials and grants only the configured dem
   const manifest = JSON.parse(fs.readFileSync(path.join(output, 'manifest.json'), 'utf8'));
   const bundled = fs.readFileSync(path.join(output, 'systems.js'), 'utf8');
   assert.equal(manifest.manifest_version, 3);
+  assert.equal(manifest.version, '1.0.2');
   assert.equal(systems.length, 7);
   assert.match(manifest.host_permissions.join('\n'), /thlip-yihui\.github\.io/);
   assert.equal(manifest.host_permissions.includes('<all_urls>'), false);
@@ -69,10 +71,66 @@ test('extension build contains no credentials and grants only the configured dem
   assert.equal(fs.existsSync(path.join(output, 'config')), false);
 });
 
+test('portal status reveals saved-password state without exposing credentials and opens extension settings', async () => {
+  const page = await browser.newPage();
+  await page.addInitScript(() => {
+    window.chrome = { runtime: { sendMessage: async message => {
+      if (message.type === 'get-credential-status') return { configuredSystemIds: ['paperless-go'], total: 7 };
+      if (message.type === 'open-options') return { success: true };
+      return null;
+    } } };
+  });
+  await page.route('https://thlip-yihui.github.io/yanshipingtai/**', route => route.fulfill({
+    status: 200,
+    contentType: 'text/html; charset=utf-8',
+    body: '<!doctype html><html><body><span id="service-label"></span><a id="extension-settings-link" href="./extension-guide.html">配置自动登录</a><div id="system-grid"><article class="system-card" data-system-id="paperless-go"><span class="card-badge">先安装扩展</span></article></div></body></html>'
+  }));
+  await page.goto('https://thlip-yihui.github.io/yanshipingtai/');
+  await page.addScriptTag({ path: path.join(root, 'browser-extension', 'systems.js') });
+  await page.addScriptTag({ path: path.join(root, 'browser-extension', 'portal.js') });
+  await page.getByText('密码已保存').waitFor();
+  assert.equal(await page.locator('#service-label').textContent(), '自动登录扩展已连接 · 1/7 项已设置');
+  assert.equal(await page.locator('.card-badge').getAttribute('data-credential-state'), 'saved');
+  await page.getByRole('link', { name: '配置自动登录' }).click();
+  assert.equal(new URL(page.url()).pathname, '/yanshipingtai/');
+  await page.close();
+});
+
+test('background returns password-presence only to the hosted portal and opens local settings on request', async () => {
+  const saved = { 'paperless-go': { username: 'demo-user', password: 'fixture-only-secret' } };
+  let onMessage;
+  let optionsOpened = 0;
+  const chromeApi = {
+    storage: { local: {
+      setAccessLevel: async () => {},
+      get: (_key, callback) => callback({ credentials: saved })
+    } },
+    action: { onClicked: { addListener() {} } },
+    runtime: {
+      onMessage: { addListener(listener) { onMessage = listener; } },
+      openOptionsPage: async () => { optionsOpened++; }
+    }
+  };
+  const sandbox = { ArchiveDemoSystems: systems, chrome: chromeApi, URL, importScripts() {} };
+  vm.runInNewContext(fs.readFileSync(path.join(root, 'browser-extension', 'background.js'), 'utf8'), sandbox);
+  const send = (message, url) => new Promise(resolve => {
+    assert.equal(onMessage(message, { url }, resolve), true);
+  });
+  const status = await send({ type: 'get-credential-status' }, 'https://thlip-yihui.github.io/yanshipingtai/');
+  assert.deepEqual(JSON.parse(JSON.stringify(status)), { configuredSystemIds: ['paperless-go'], total: 7 });
+  assert.doesNotMatch(JSON.stringify(status), /fixture-only-secret/);
+  assert.deepEqual(JSON.parse(JSON.stringify(await send({ type: 'open-options' }, 'https://thlip-yihui.github.io/yanshipingtai/'))), { success: true });
+  assert.equal(optionsOpened, 1);
+  assert.equal(onMessage({ type: 'get-credential-status' }, { url: 'https://example.org/' }, () => {}), false);
+});
+
 test('GitHub Pages dense-shelf button opens its fixed private-system URL', async () => {
   const page = await browser.newPage();
   await page.addInitScript(() => {
     window.open = url => { window.openedDemoUrl = url; return null; };
+    window.chrome = { runtime: { sendMessage: async message => message.type === 'get-credential-status'
+      ? { configuredSystemIds: [], total: 7 }
+      : { success: true } } };
   });
   await page.route('https://thlip-yihui.github.io/yanshipingtai/**', route => route.fulfill({
     status: 200,
@@ -93,6 +151,9 @@ test('GitHub Pages dense-shelf link opens its configured private-system URL', as
   const page = await browser.newPage();
   await page.addInitScript(() => {
     window.open = url => { window.openedDemoUrl = url; return null; };
+    window.chrome = { runtime: { sendMessage: async message => message.type === 'get-credential-status'
+      ? { configuredSystemIds: [], total: 7 }
+      : { success: true } } };
   });
   await page.route('https://thlip-yihui.github.io/yanshipingtai/**', route => route.fulfill({
     status: 200,

@@ -17,6 +17,7 @@ const BUILD_VERSIONS = new Set([
   'archive-demo-nav GitHub Pages build v2\n'
 ]);
 const HOSTED_SYSTEMS_MARKER = '<!-- GITHUB_PAGES_SYSTEMS -->';
+const HOSTED_SETUP_MARKER = '<!-- GITHUB_PAGES_SETUP_LINK -->';
 
 function normalizeDesktopUrl(value) {
   if (value == null || value === '') return '';
@@ -37,7 +38,7 @@ function buildPages({ projectRoot = path.resolve(__dirname, '..'), outputDirecto
   }
   const indexSourcePath = path.join(projectRoot, 'public', 'index.html');
   const indexTemplate = fs.readFileSync(indexSourcePath, 'utf8');
-  if (indexTemplate.split(HOSTED_SYSTEMS_MARKER).length !== 2) {
+  if (indexTemplate.split(HOSTED_SYSTEMS_MARKER).length !== 2 || indexTemplate.split(HOSTED_SETUP_MARKER).length !== 2) {
     throw new Error('GitHub Pages 首页缺少系统清单注入标记');
   }
   const configSource = path.join(projectRoot, 'public', 'hosted-config.example.json');
@@ -57,7 +58,9 @@ function buildPages({ projectRoot = path.resolve(__dirname, '..'), outputDirecto
     fs.mkdirSync(path.dirname(outputPath), { recursive: true });
     fs.copyFileSync(path.join(projectRoot, source), outputPath, fs.constants.COPYFILE_EXCL);
   }
-  const hostedIndex = indexTemplate.replace(HOSTED_SYSTEMS_MARKER, '<script src="./hosted.js" defer></script>');
+  const hostedIndex = indexTemplate
+    .replace(HOSTED_SYSTEMS_MARKER, '<script src="./hosted.js" defer></script>')
+    .replace(HOSTED_SETUP_MARKER, '<a class="nav-link" id="extension-settings-link" href="./extension-guide.html">配置自动登录</a>');
   fs.writeFileSync(path.join(destination, 'index.html'), hostedIndex, { encoding: 'utf8', flag: 'wx' });
   fs.writeFileSync(path.join(destination, 'demo-config.json'), `${JSON.stringify({ desktopUrl: normalizedUrl })}\n`, {
     encoding: 'utf8', flag: 'wx'
@@ -79,4 +82,4 @@ if (require.main === module) {
   }
 }
 
-module.exports = { buildPages, normalizeDesktopUrl, PUBLIC_FILES, HOSTED_SYSTEMS_MARKER };
+module.exports = { buildPages, normalizeDesktopUrl, PUBLIC_FILES, HOSTED_SYSTEMS_MARKER, HOSTED_SETUP_MARKER };
